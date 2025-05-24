@@ -1,0 +1,60 @@
+{% extends "index.html" %}
+
+{% load static %}
+
+{% block title %}Trendify - Login{% endblock %}
+
+{% block header %}{% endblock %}
+
+{% block content %}
+
+<div class="col-xl-8 col-lg-10 col-sm-8 mt-sm-5 mx-auto p-3 p-sm-5 border shadow-lg text-dark rounded-3">
+    <form method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ next|default:'' }}"> <!-- previous url -->
+        <div class="d-flex flex-column flex-lg-row gap-1 gap-md-4">
+            <div class="container-fluid my-auto text-center">
+                <img src="{% static 'images/logo.webp' %}" class="rounded" style="max-width: 80%;" alt="logo">
+            </div>
+            <span class="border-start border-dark-subtle me-4"></span>
+            <div class="container-fluid me-md-3">
+                <div class="my-2 text-center"><h4 class="display-5 fw-bold lh-1 text-body-emphasis">Login to Trendify</h4></div>
+                <div class="form-floating my-3 text-dark">
+                    <!-- <input type="text" class="form-control" placeholder="Enter username" name="username" autofocus required> -->
+                    <input type="text" class="form-control {% if form.username.errors %}is-invalid{% endif %}" placeholder="Enter username" name="username" autofocus required>
+                    <!-- {{ form.username }} -->
+                    <label for="username">Username</label>
+                    {% if form.username.errors %}
+                    <div class="invalid-feedback">
+                        {{ form.username.errors|first }}
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="form-floating my-3 text-dark">
+                    <input type="password" class="form-control {% if form.username.errors %}is-invalid{% endif %}" placeholder="Enter password" name="password" required>
+                    <!-- {{ form.password }} -->
+                    <label for="password">Password</label>
+                    {% comment %} {% if form.password.errors %}
+                    <label for="password" class="invalid-feedback">
+                        {{ form.password.errors|first }}
+                    </label>
+                    {% endif %}
+                    {% if form.errors %}
+                    {% for error in form.errors %}
+                        <label for="password">
+                            {{ error }}
+                        </label>
+                    {% endfor %}
+                    {% endif %} {% endcomment %}
+                </div>
+                <div class="d-grid text-center">
+                    <button type="submit" class="btn btn-success btn-block">Login</button>
+                    <p class="mt-2">Do not have an account yet? <a href="{% url 'register' %}" class="text-decoration-none text-primary">Register</a></p>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+{% endblock %}

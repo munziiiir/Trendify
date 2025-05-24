@@ -1,0 +1,58 @@
+{% extends "index.html" %}
+
+{% load static %}
+
+{% block title %}Trendify - ABout{% endblock %}
+
+{% block content %}
+<div class="container my-sm-5">
+    <div class="row p-4 pb-0 pe-lg-0 pt-lg-5 align-items-center rounded-3 border shadow-lg">
+        <div class="col-lg-6 p-3 p-lg-5 pt-lg-3">
+            <h1 class="display-5 fw-bold lh-1 text-body-emphasis">About Trendify</h1>
+            <p class="lead">At Trendify, we believe fashion is more than clothing; it's a way to express who you are. Founded with a mission to redefine style, Trendify brings you the latest trends, timeless designs, and premium quality—all at your fingertips. Our team works tirelessly to curate collections that empower individuals to shine confidently, no matter the occasion.</p>
+            <p class="lead">From humble beginnings to becoming a destination for style enthusiasts, Trendify prides itself on its commitment to innovation, sustainability, and community. Join us in shaping a world where every choice is a statement, and style is for everyone.</p>
+        </div>
+        <div class="col-lg-6 offset-lg-0 p-3 rounded">
+            <h3 class="fw-bold mb-3">Contact Us</h3>
+            <ul class="list-unstyled">
+                <li class="mb-2">
+                    <strong>Email:</strong> 
+                    <a href="mailto:support@trendify.com" class="text-decoration-none">support@trendify.com</a>
+                </li>
+                <li class="mb-2">
+                    <strong>Phone:</strong> 
+                    <a href="tel:+1234567890" class="text-decoration-none">+1 (234) 567-890</a>
+                </li>
+                <li class="mb-3">
+                    <strong>Address:</strong> 
+                    <p class="mb-0 d-inline">123 Trendify Lane, Fashion District, NY</p>
+                </li>
+            </ul>
+
+            <h3 class="fw-bold mb-3">Follow Us</h3>
+            <ul class="list-inline">
+                <li class="list-inline-item">
+                    <a href="https://facebook.com/trendify" class="text-decoration-none" target="_blank">
+                        <img src="{% static 'icons/facebook.svg' %}" alt="Facebook" width="30">
+                    </a>
+                </li>
+                <li class="list-inline-item">
+                    <a href="https://twitter.com/trendify" class="text-decoration-none" target="_blank">
+                        <img src="{% static 'icons/twitter.svg' %}" alt="Twitter" width="30">
+                    </a>
+                </li>
+                <li class="list-inline-item">
+                    <a href="https://instagram.com/trendify" class="text-decoration-none" target="_blank">
+                        <img src="{% static 'icons/instagram.svg' %}" alt="Instagram" width="30">
+                    </a>
+                </li>
+                <li class="list-inline-item">
+                    <a href="https://linkedin.com/company/trendify" class="text-decoration-none" target="_blank">
+                        <img src="{% static 'icons/linkedin.svg' %}" alt="LinkedIn" width="30">
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock content %}

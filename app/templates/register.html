@@ -1,0 +1,42 @@
+{% extends "index.html" %}
+
+{% load static %}
+
+{% block title %}Trendify - Register{% endblock %}
+
+{% block header %}{% endblock %}
+
+{% block content %}
+
+<div class="col-xl-8 col-lg-10 col-sm-8 my-sm-4 mx-auto p-3 p-sm-5 border shadow-lg text-dark rounded-3">
+    <form method="post" action="{% url 'register' %}">
+        {% csrf_token %}
+        <div class="d-flex flex-column flex-lg-row gap-1 gap-md-4">
+            <div class="container-fluid my-auto text-center">
+                <img src="{% static 'images/logo.webp' %}" class="rounded" style="max-width: 80%;" alt="logo">
+            </div>
+            <span class="border-start border-dark-subtle me-4"></span>
+            <div class="container-fluid me-md-3">
+                <div class="my-2 text-center"><h4 class="display-5 fw-bold lh-1 text-body-emphasis">Register at Trendify</h4></div>
+                <div class="form-floating my-3 text-dark">
+                    {{ form.username }}
+                    <label for="username">Username</label>
+                </div>
+                <div class="form-floating my-3 text-dark">
+                    {{ form.password1 }}
+                    <label for="password">Password</label>
+                </div>
+                <div class="form-floating my-3 text-dark">
+                    {{ form.password2 }}
+                    <label for="password">Confirm Password</label>
+                </div>
+                <div class="d-grid text-center">
+                    <button type="submit" class="btn btn-primary btn-block">Register</button>
+                    <p class="mt-2">Already have an account? <a href="{% url 'login' %}" class="text-decoration-none text-success">Log In</a></p>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

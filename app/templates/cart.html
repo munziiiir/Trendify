@@ -1,0 +1,98 @@
+{% extends "index.html" %}
+
+{% load static %}
+
+{% block title %}Trendify - My Cart{% endblock %}
+
+{% block navtitle %}
+<div class="container-fluid bg-white shadow d-flex align-items-center" style="height: 10vh;">
+    <div class="container my-auto h5">My Cart</div>
+</div>
+{% endblock navtitle %}
+
+{% block content %}
+
+<div class="col-xl-8 col-lg-10 col-sm-8 mx-auto p-3 p-sm-5 overflow-y-scroll"
+    style="height: calc(80vh - 56px);">
+    {% for p in products %}
+    <div class="d-flex flex-column mb-2">
+        <div class="d-flex justify-content-between">
+            <div class="h6">{{ p.name }}</div>
+            <div class="h6 price" data-index="{{ p.id }}">${{ p.price }}</div>
+        </div>
+        <div class="d-flex justify-content-between">
+            <img src="{{ p.image.url }}" alt="..." class="img-fluid rounded"
+                style="max-height: 100px; max-width: 100px;">
+            <div class="d-flex flex-column gap-1">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-dark rounded-start-pill" id="m{{ p.id }}"
+                        onclick="m(this)">&minus;</button>
+                    {% for key, value in quantities.items %}
+                    {% if key == p.id|slugify %}
+                    <input type="number" id="qty{{ p.id }}" data-index="{{ p.id }}" value="{{ value }}"
+                        class="form-control form-control-sm text-center" style="max-width: 45.63px;" />
+                    {% endif %}
+                    {% endfor %}
+                    <button type="button" class="btn btn-sm btn-dark rounded-end-pill" id="p{{ p.id }}"
+                        onclick="p(this)">&plus;</button>
+                </div>
+                <button id="update-cart" data-index="{{ p.id }}" class="btn btn-sm btn-dark rounded-pill"
+                    role="button">Update</button>
+                <button id="delete-cart" data-index="{{ p.id }}" class="btn btn-sm btn-danger rounded-pill"
+                    role="button">Delete</button>
+            </div>
+        </div>
+        <span class="border-top border-dark-subtle mt-2"></span>
+    </div>
+    {% empty %}
+    <div class="d-flex align-items-center justify-content-center text-center h-100">You do not have any items added to
+        your cart yet</div>
+    {% endfor %}
+</div>
+<!-- total section -->
+{% if products %}
+<div class="bg-body-secondary">
+    <div class="position-sticky bottom-0 col-xl-8 col-lg-10 col-sm-8 mx-auto px-3 px-sm-5" style="height: 10vh;">
+        <div class="d-flex align-items-center justify-content-end gap-2 h-100">
+            <div class="h6 my-auto">Total: ${{ total }}</div>
+            <div class=""><button id="checkout-button" class="btn btn-sm btn-success rounded-pill" data-bs-toggle="modal" 
+                    data-bs-target="#checkout" role="button" style="width: 99px;">Checkout</button></div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div id="checkout" class="modal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-lg-down modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Checkout</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {% for p in products %}
+                <div>
+                    <div>{{ p.name }} ({{ p.price }})</div>
+                    <div class="checkout-price" data-index="{{ p.id }}">0</div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="modal-footer">
+                <p>Total: ${{ total }}</p>
+                <a href="{% url 'payment' %}" type="button" style="width: 99px;" class="btn btn-sm btn-success rounded-pill">Pay Now</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const cartUpdateUrl = "{% url 'cart_update' %}";
+    const cartDeleteUrl = "{% url 'cart_delete' %}";
+    const csrfToken = "{{ csrf_token }}";
+</script>
+
+<script src="{% static 'js/cart.js' %}"></script>
+<script src="{% static 'js/qty.js' %}"></script>
+
+
+{% endblock %}

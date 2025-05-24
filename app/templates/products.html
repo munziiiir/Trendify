@@ -1,0 +1,54 @@
+{% extends "index.html" %}
+
+{% load static %}
+
+{% block title %}Trendify - Products{% endblock %}
+
+{% block style %}
+<style>
+    @media (min-width: 576px) {
+        .outer{max-width: 18rem;}
+        .inner{max-height: 3rem; font-size: 10px;}
+    }
+    @media (max-width: 576px) {
+        .image{
+            width: 100px;
+            height: 100px;
+        }
+        .card-body{padding: 8px;}
+    }
+</style>
+{% endblock %}
+
+{% block navtitle %}
+<div class="container-fluid bg-white shadow d-flex align-items-center" style="height: 10vh;">
+    <div class="container my-auto h5">Products</div>
+</div>
+{% endblock navtitle %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row my-2">
+        {% for p in products %}
+        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card mx-auto mb-4 d-flex flex-row flex-sm-column justify-content-between outer">
+                <img src="{{p.image.url}}" class="p-2 img-fluid image order-2 order-sm-1" alt="...">
+                <div class="d-flex flex-column order-1 order-sm-2">
+                    <div class="card-body inner">
+                        <h5 class="">{{p.name}}</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex gap-4 gap-sm-2 gap-xl-1 align-items-center justify-content-sm-between">
+                            <h6 class="my-auto">${{p.price}}</h6>
+                            <a href="{% url 'product' p.id %}" class="btn btn-sm btn-dark rounded-pill" style="width: 99px;">View</a>
+                        </div>
+                    </div>                    
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

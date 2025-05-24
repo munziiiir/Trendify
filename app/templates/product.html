@@ -1,0 +1,42 @@
+{% extends "index.html" %}
+
+{% load static %}
+
+{% block title %}Trendify - Product{% endblock %}
+
+{% block content %}
+
+
+<div class="col-lg-8 col-md-10 col-sm-8 my-sm-4 mx-auto p-3 p-sm-5 border shadow-lg text-dark rounded-3">
+    <h2 class="text-start mb-3">{{ product.name }}</h2>
+    <div class="d-flex flex-column gap-2 flex-md-row gap-md-4">
+        <div class="my-auto"><img src="{{ product.image.url }}" alt="..." class="img-fluid rounded"></div>
+        <span class="border-start border-dark-subtle"></span>
+        <div class="d-flex flex-column gap-2 justify-content-center">
+            <p><b>Categories:</b> {{ product.category }}</p>
+            <p>{{ product.description }}</p>
+            <div class="d-flex gap-2 gap-xl-1 align-items-center justify-content-between">
+                <h6 class="my-auto">${{ product.price }}</h6>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-dark rounded-start-pill" onclick="m(this)">&minus;</button>
+                    <input type="number" id="qty" value="1" class="form-control form-control-sm text-center" style="max-width: 45.63px;"/>
+                    <button type="button" class="btn btn-sm btn-dark rounded-end-pill" onclick="p(this)">&plus;</button>
+                </div>
+                {% if user.is_authenticated %}
+                <button type="button" class="btn btn-sm btn-dark rounded-pill" value="{{ product.id }}" id="addcart" style="width: 99px;">Add to Cart</button>
+                {% else %}
+                <a type="button" class="btn btn-sm btn-dark rounded-pill" href="{% url 'cart_add' %}" style="width: 99px;">Add to Cart</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const cartAddUrl = "{% url 'cart_add' %}";
+    const csrfToken = "{{ csrf_token }}";
+</script>
+<script src="{% static 'js/product.js' %}"></script>
+<script src="{% static 'js/qty.js' %}"></script>
+
+{% endblock %}
