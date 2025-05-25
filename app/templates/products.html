@@ -29,6 +29,28 @@
 {% block content %}
 
 <div class="container">
+
+    <form method="get" class="row my-4">
+        <div class="col-sm-6 mb-2">
+            <input type="text" name="query" value="{{ query }}" class="form-control" placeholder="Search products...">
+        </div>
+        <div class="col-sm-6 mb-2">
+            <div class="d-flex flex-wrap gap-2">
+                {% for cat in categories %}
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="categories" value="{{ cat.name }}"
+                            id="cat{{ forloop.counter }}"
+                            {% if cat.name in selected_categories %}checked{% endif %}>
+                        <label class="form-check-label" for="cat{{ forloop.counter }}">{{ cat.name }}</label>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-12 mb-2">
+            <button type="submit" class="btn btn-dark">Filter</button>
+        </div>
+    </form>
+
     <div class="row my-2">
         {% for p in products %}
         <div class="col-xl-3 col-lg-4 col-md-6">

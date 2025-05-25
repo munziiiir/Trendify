@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.urls import resolve, Resolver404
 from django.http import JsonResponse
 from .forms import createUserForm, loginForm
-from .models import Product, Customer
+from .models import Product, Customer, Category
 from .cart import Cart
 import json
 
@@ -17,8 +17,14 @@ def about(request):
     return render(request, 'about.html')
 
 def products(request):
+    query = request.GET.get('query', '') # search
+    selected_categories = request.GET.getlist('categories') # filter
     products = Product.objects.all()
-    return render(request, 'products.html', {'products': products})
+    # narrow products list to display based on search and filters selected
+    if query: products = products.filter(name__icontains=query)
+    if selected_categories: products = products.filter(categories__name__in=selected_categories).distinct()
+    categories = Category.objects.all()
+    return render(request, 'products.html', {'products': products, 'categories': categories, 'selected_categories': selected_categories})
 
 @login_required
 def cart(request):

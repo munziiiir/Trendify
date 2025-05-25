@@ -13,7 +13,12 @@
         <div class="my-auto"><img src="{{ product.image.url }}" alt="..." class="img-fluid rounded"></div>
         <span class="border-start border-dark-subtle"></span>
         <div class="d-flex flex-column gap-2 justify-content-center">
-            <p><b>Categories:</b> {{ product.category }}</p>
+            <p>
+                <b>Categories:</b>
+                {% for cat in product.categories.all %}
+                {{ cat.name }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </p>
             <p>{{ product.description }}</p>
             <div class="d-flex gap-2 gap-xl-1 align-items-center justify-content-between">
                 <h6 class="my-auto">${{ product.price }}</h6>
