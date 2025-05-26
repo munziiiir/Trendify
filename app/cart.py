@@ -1,4 +1,4 @@
-from .models import Product, Customer
+from .models import Product, Customer, Order, OrderItem
 from django.contrib import messages
 import json
 # adds data to a user session to store cart data as a python dictionary
@@ -47,8 +47,13 @@ class Cart():
         self.session.modified = True
     
     def paymentDelete(self):
-        # can add functionality to save the ordered items to db
-        # [code]
+        # can add functionality to save the ordered items to db: added :)
+        customer = Customer.objects.get(user=self.request.user)
+        order = Order.objects.create(customer=customer, complete=True)
+        # loop through cart items and add details to db
+        for product_id, quantity in self.cart.items():
+            product = Product.objects.get(id=int(product_id))
+            OrderItem.objects.create(order=order, product=product, quantity=quantity)
         # clears cart after checkout
         self.cart.clear()
         self.dbsave()
@@ -57,13 +62,8 @@ class Cart():
     def total(self):
         total = 0
         products = Product.objects.filter(id__in = self.cart.keys())
-        # for key, value in self.cart.items():
-        #     for product in products:
-        #         if product.id == int(key):
-        #             total += (product.price * value)
         total = sum(product.price * value for key, value in self.cart.items() for product in products if product.id == int(key))
         return total
-        # return sum(item['quantity'] for item in self.cart.values())
     
     def getProd(self):
         product_ids = self.cart.keys()

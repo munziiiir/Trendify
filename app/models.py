@@ -36,13 +36,18 @@ class Product(models.Model):
     def __str__(self) -> str:
         return self.name
 
-
 class Order(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    quantity = models.IntegerField(default=1)
-    date = models.DateTimeField(default=datetime.datetime.today)
-    status = models.BooleanField(default=False)
+    date = models.DateTimeField(auto_now_add=True)
+    complete = models.BooleanField(default=False)
 
-    def __str__(self) -> str:
-        return self.product
+    def __str__(self):
+        return f"Order #{self.id} by {self.customer}"
+    
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="items")
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return f"{self.quantity} x {self.product.name}"
