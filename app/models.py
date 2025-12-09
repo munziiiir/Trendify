@@ -11,12 +11,13 @@ class Customer(models.Model):
     def __str__(self) -> str:
         return f'{self.user}'
 
-# created a customer model object automatically when a user registers
+# creates a customer model object automatically when a user registers (only for non-staff, non-superuser accounts)
 def create_customer(sender, instance, created, **kwargs):
-    if created:
+    if created and not instance.is_staff and not instance.is_superuser:
         Customer.objects.create(user=instance)
+
 post_save.connect(create_customer, sender=User)
-    
+
 class Category(models.Model):
     class Meta:
         verbose_name_plural = "Categories"
@@ -43,7 +44,7 @@ class Order(models.Model):
 
     def __str__(self):
         return f"Order #{self.id} by {self.customer}"
-    
+
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="items")
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
