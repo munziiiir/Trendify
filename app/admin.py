@@ -1,7 +1,6 @@
 import types
 from django.contrib import admin
-from django.contrib.auth.models import User
-from .custom_admin import trendify_admin_site, StaffManagerUserAdmin, CustomGroupAdmin
+from .custom_admin import trendify_admin_site
 from .models import Customer, Category, Product, Order, OrderItem
 
 # Lock down the default admin site so only superusers can access /superadmin.
