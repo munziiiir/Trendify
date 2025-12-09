@@ -1,8 +1,16 @@
+import types
 from django.contrib import admin
-from .custom_admin import trendify_admin_site
+from django.contrib.auth.models import User
+from .custom_admin import trendify_admin_site, StaffManagerUserAdmin, CustomGroupAdmin
 from .models import Customer, Category, Product, Order, OrderItem
 
-# Register your models here.
+# Lock down the default admin site so only superusers can access /superadmin.
+def _superuser_only_permission(self, request):
+    return request.user.is_active and request.user.is_superuser
+
+admin.site.has_permission = types.MethodType(_superuser_only_permission, admin.site)
+
+# Register your models here for the superuser admin.
 admin.site.register(Customer)
 admin.site.register(Category)
 admin.site.register(Product)
