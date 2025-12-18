@@ -4,9 +4,11 @@ Trendify Setup and Usage Guide
 Getting the code (Windows, macOS, Linux)
 ----------------------------------------
 You receive a ZIP file that contains:
-* The entire `Trendify` project directory (this repo’s contents)
+* The entire `Trendify` project directory from our local working copy (not a fresh git clone)
 * A demo video of the site
 * A PPT presentation
+* Everything in the repo including `media/` sample uploads and our Django settings
+* The only folder we do **not** ship is our local virtual environment (`/env`); you must create your own env
 
 To start from the ZIP:
 1) Extract the archive:
@@ -30,6 +32,7 @@ Python environment and dependencies (cross-platform)
 4) Install dependencies:
    * macOS/Linux: `python3 -m pip install -r requirements.txt`
    * Windows: `py -m pip install -r requirements.txt`
+5) (Optional) Remove any leftover virtualenv metadata if present: delete a copied `env/` or `.venv/` folder before creating your own env above.
 
 Database setup (PostgreSQL) — Windows, macOS, Linux
 ---------------------------------------------------
@@ -84,6 +87,15 @@ Custom Admin
 * Default Django admin (superusers only): `/superadmin/`
   * Use the `admin` superuser account from the data dump or create your own superuser with `createsuperuser`.
 * If you change group names or add permissions, update `db_dump.json` or adjust the groups in `/superadmin/`.
+
+What to change for a new environment
+------------------------------------
+* Secret key and debug: update `SECRET_KEY` in `trendify/settings.py` and set `DEBUG = False` for anything beyond local testing.
+* Allowed hosts: set `ALLOWED_HOSTS` in `trendify/settings.py` to the domains/IPs you’ll use.
+* Database credentials: adjust the `DATABASES['default']` block in `trendify/settings.py` to your own Postgres user/password/host/port/db name.
+* Environment variables (optional): if you prefer, move the secrets above into a `.env` and load them (e.g., via `python-dotenv` or `os.environ`); the shipped project currently uses inline settings.
+* Media files: `media/` is included with sample uploads; keep the folder or point `MEDIA_ROOT` to a writable directory.
+* Git state: because this is a copied working tree, initialize your own repo if needed: `git init`, add remote, then commit.
 
 Primary navigation and routes
 -----------------------------
