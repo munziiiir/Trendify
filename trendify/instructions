@@ -1,0 +1,125 @@
+Trendify Setup and Usage Guide
+==============================
+
+Getting the code (Windows, macOS, Linux)
+----------------------------------------
+You receive a ZIP file that contains:
+* The entire `Trendify` project directory (this repo’s contents)
+* A demo video of the site
+* A PPT presentation
+
+To start from the ZIP:
+1) Extract the archive:
+   * macOS/Linux (terminal): `unzip Trendify.zip`
+   * Windows (File Explorer): right-click → “Extract All…”
+   * Windows (PowerShell): `Expand-Archive -Path Trendify.zip -DestinationPath .`
+2) Change into the project root:
+   * macOS/Linux: `cd Trendify`
+   * Windows PowerShell or CMD: `cd Trendify`
+
+Python environment and dependencies (cross-platform)
+----------------------------------------------------
+1) Use Python 3.12+ (Django 5.1.2 compatible).
+2) Create a virtual environment:
+   * macOS/Linux: `python3 -m venv .venv`
+   * Windows (PowerShell/CMD): `py -m venv .venv`
+3) Activate the virtual environment:
+   * macOS/Linux: `source .venv/bin/activate`
+   * Windows PowerShell: `.venv\\Scripts\\Activate.ps1`
+   * Windows CMD: `.venv\\Scripts\\activate.bat`
+4) Install dependencies:
+   * macOS/Linux: `python3 -m pip install -r requirements.txt`
+   * Windows: `py -m pip install -r requirements.txt`
+
+Database setup (PostgreSQL) — Windows, macOS, Linux
+---------------------------------------------------
+1) Install PostgreSQL 14+:
+   * macOS: `brew install postgresql` (Homebrew) or download from https://www.postgresql.org/download/
+   * Ubuntu/Debian: `sudo apt update && sudo apt install postgresql postgresql-contrib`
+   * Windows: install via the official PostgreSQL installer.
+2) Start PostgreSQL service (if not already running):
+   * macOS (Homebrew): `brew services start postgresql`
+   * Ubuntu/Debian: `sudo service postgresql start`
+   * Windows: ensure the “postgresql” Windows Service is running (Services app) or restart with `net stop postgresql-x64-XX` / `net start postgresql-x64-XX` (replace `XX` with your version).
+3) Create the database and user that match the default Django settings:
+   * Launch psql:
+     - macOS/Linux: `psql -U postgres`
+     - Windows: open “SQL Shell (psql)” or run `psql -U postgres` from an elevated shell.
+   * Inside psql, run:
+     ```
+     CREATE DATABASE "Trendify";
+     CREATE USER postgres WITH PASSWORD 'placebo';
+     GRANT ALL PRIVILEGES ON DATABASE "Trendify" TO postgres;
+     ```
+     (If you already have a `postgres` superuser, you can skip creating the user and just ensure the password matches or update `trendify/settings.py`.)
+4) Apply migrations:
+   * macOS/Linux: `python3 manage.py migrate`
+   * Windows: `py manage.py migrate`
+5) Load the provided data dump (products, users, categories, orders, etc.):
+   * macOS/Linux: `python3 manage.py loaddata db_dump.json`
+   * Windows: `py manage.py loaddata db_dump.json`
+   This seeds the sample users and catalog referenced below.
+
+Running the application
+-----------------------
+* Start the development server:
+  * macOS/Linux: `python3 manage.py runserver`
+  * Windows: `py manage.py runserver`
+* The site will be available at http://127.0.0.1:8000/.
+* Media uploads are stored in `<repo>/media` (configured via `MEDIA_ROOT`).
+
+Custom Admin
+------------
+* Custom admin site (non-superuser staff): `/admin/`
+  * Implemented in `app/custom_admin.py` via `TrendifyAdminSite`.
+  * Staff roles rely on Django groups seeded in `db_dump.json`:
+    * `Trendify Admin` — full access to the custom admin (non-superuser).
+    * `Staff Manager` — can add/edit staff users with guardrails; cannot delete users.
+    * `Staff User` — basic staff permissions.
+  * Staff Manager constraints (see `StaffManagerUserAdmin`):
+    * Can only manage staff (non-superuser, not in admin groups).
+    * Cannot view/change groups.
+    * When creating users, staff status is enforced; superuser escalation is blocked.
+    * Optional password reset fields appear on edit; both must match to update.
+* Default Django admin (superusers only): `/superadmin/`
+  * Use the `admin` superuser account from the data dump or create your own superuser with `createsuperuser`.
+* If you change group names or add permissions, update `db_dump.json` or adjust the groups in `/superadmin/`.
+
+Primary navigation and routes
+-----------------------------
+* `/` – Home page
+* `/products/` – Product listing with search (`?query=<text>`) and category filters (`?categories=<name>`)
+* `/product/<id>` – Product detail
+* `/about/` – About page
+* `/register/` – Customer registration
+* `/login/` – Login (supports `next` query parameter)
+* `/logout/` – Logout (respects `next` except for cart/payment views)
+* `/cart/` – View cart (login required)
+* `/cart/add` – Add to cart (POST, login required)
+* `/cart/update` – Update cart item quantity (POST, login required)
+* `/cart/delete` – Remove cart item (POST, login required)
+* `/payment/success` – Post-checkout confirmation (login required)
+* `/admin/` – Trendify custom admin (staff with appropriate group)
+* `/superadmin/` – Django default admin (superusers)
+
+Test/demo accounts (from db_dump.json)
+--------------------------------------
+The data dump seeds these users (change passwords in the admin if desired):
+* Customer: `testcustomer` / `trendifytest`
+* Staff: `staffuser1`, `staffuser2`, `staffuser3` / `trendifystaff1`, `trendifystaff2`, `trendifystaff3`
+* Staff manager: `staffmanager` / `trendifymanager`
+* Superuser admin: `admin` / `admin`
+
+Cart and checkout behavior
+--------------------------
+* Cart contents are stored in the session and synchronized to each customer record for persistence across logins.
+* Checkout (`/payment/success`) records an `Order` plus per-item `OrderItem` rows, then clears the cart.
+
+Additional tips
+---------------
+* Static assets live in `app/static`; templates are in `app/templates`.
+* Authentication-required views redirect unauthenticated users to `/login/` with a `next` parameter.
+* Staff roles rely on Django groups:
+  * `Trendify Admin` – full custom-admin access (non-superuser)
+  * `Staff Manager` – limited user management within custom admin
+  * `Staff User` – basic staff access in custom admin
